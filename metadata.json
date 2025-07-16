@@ -1,0 +1,5 @@
+{
+  "name": "SQL Murder Mystery",
+  "description": "A game where you solve murder cases by querying a database using SQL. A new case is generated for each game, and you must find the killer and the weapon by analyzing the data in the provided tables.",
+  "requestFramePermissions": []
+}
