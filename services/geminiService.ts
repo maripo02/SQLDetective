@@ -99,7 +99,7 @@ export const generateMurderCase = async (language: Language): Promise<Case> => {
     - suspects: A list of potential suspects with their personal details (must include name, age, occupation, relationship_to_victim).
     - interviews: Transcripts or summaries of interviews with witnesses or suspects. Must contain clues.
     - victims: Information about the victim.
-    - solution: An empty table that the user will insert the answer into. The schema must be { "killer": "string" } and the data array must be empty.
+    - solution: An empty table for the final answer. Its schema must be { "killer": "string" } and its data array must be empty. Its description, which must be in ${languageInstruction}, must explain that the user needs to provide the killer's full name exactly as it's written in the 'suspects' table (e.g., 'Jane Doe'), with correct capitalization and no accents.
     `;
 
     try {
@@ -122,7 +122,7 @@ export const generateMurderCase = async (language: Language): Promise<Case> => {
         } else {
             generatedCase.tables.push({
                 name: 'solution',
-                description: 'The table to insert your final answer into. Column: killer.',
+                description: "The table to insert your final answer into. You must provide the killer's full name, with the first and last name capitalized. The name must be written exactly as it appears in the database, without accents (e.g. 'Jane Doe').",
                 schema: { killer: 'string' },
                 data: []
             });

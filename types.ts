@@ -7,7 +7,6 @@ export enum GameState {
   GENERATING,
   INVESTIGATING,
   SOLVED,
-  FAILED,
   ERROR,
 }
 

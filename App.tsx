@@ -14,6 +14,7 @@ import LanguageSwitcher from './components/LanguageSwitcher';
 import CommandHistory from './components/CommandHistory';
 import SavedCases from './components/SavedCases';
 import SaveGameModal from './components/SaveGameModal';
+import IncorrectSolutionModal from './components/IncorrectSolutionModal';
 
 
 declare var alasql: any;
@@ -28,6 +29,7 @@ const App: React.FC = () => {
   const [currentQuery, setCurrentQuery] = useState('SELECT * FROM suspects;');
   const [savedGames, setSavedGames] = useState<SavedGame[]>([]);
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
+  const [isIncorrectSolutionModalOpen, setIsIncorrectSolutionModalOpen] = useState(false);
   const [isTranslating, setIsTranslating] = useState(false);
   const { t, language } = useLanguage();
   const prevLangRef = useRef(language);
@@ -151,7 +153,7 @@ const App: React.FC = () => {
                 if (submittedKiller?.trim().toLowerCase() === currentCase.solution.killer.trim().toLowerCase()) {
                     setGameState(GameState.SOLVED);
                 } else {
-                    setGameState(GameState.FAILED);
+                    setIsIncorrectSolutionModalOpen(true);
                 }
             }
              setQueryHistory(prev => [...prev, { id: resultId, query: currentQuery, isSolutionAttempt: true }]);
@@ -265,19 +267,12 @@ const App: React.FC = () => {
           />
         );
       case GameState.INVESTIGATING:
-      case GameState.FAILED:
         if (!currentCase) return null;
         return (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 p-4 md:p-6 h-full">
             <div className="lg:col-span-4 flex flex-col gap-6 overflow-y-auto pr-2">
               <CaseBriefing title={currentCase.title} story={currentCase.story} />
               <SchemaViewer tables={currentCase.tables} />
-               {gameState === GameState.FAILED && (
-                <div className="bg-red-900/50 border border-red-700 text-red-200 p-4 rounded-lg animate-pulse">
-                    <h3 className="font-bold text-lg">{t('incorrectSolutionTitle')}</h3>
-                    <p>{t('incorrectSolutionBody')}</p>
-                </div>
-              )}
             </div>
             <div className="lg:col-span-8 h-full flex flex-col lg:flex-row gap-4 min-h-0">
                 <div className="h-1/2 lg:h-full flex-grow lg:w-2/3 min-h-0">
@@ -347,6 +342,11 @@ const App: React.FC = () => {
                 resetGame();
             }}
             onCancel={() => setIsSaveModalOpen(false)}
+        />
+      )}
+      {isIncorrectSolutionModalOpen && (
+        <IncorrectSolutionModal 
+            onClose={() => setIsIncorrectSolutionModalOpen(false)}
         />
       )}
     </main>
